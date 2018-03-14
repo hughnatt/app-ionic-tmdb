@@ -4,34 +4,26 @@
       MMDO - TP
     </ion-title>
   </ion-navbar>
+  <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
 </ion-header>
 
 <ion-content padding>
+
+
   
-  <ion-card>
+  <ion-list>
+    <ion-item *ngFor="let current of results">
+      <ion-thumbnail item-start>
+        <img [src]="current.image" alt="Affiche du film">
+      </ion-thumbnail>
+      <h2>{{current.title}}</h2>
+      <p>{{current.director}}</p>
+      <p>{{current.date}}</p>
+      <button ion-button [navPush]="pushPage" [navParams]="{title: current.title}" item-end>View</button>
+    </ion-item>
 
-    <ion-card-header>
-      Star Wars VIII
-    </ion-card-header>
-    <ion-card-content>
-      The Last Jedi
-    </ion-card-content>
-    <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"/>
-    <ion-card-header>
-      Director
-    </ion-card-header>
-    <ion-card-content>
-      Rian Johnson
-    </ion-card-content>
+    <ion-item *ngIf="results.length<=0">Aucun résultat</ion-item>
   
-    <ion-card-header>
-      Release Date
-    </ion-card-header>
-    <ion-card-content>
-      15/12/2017
-    </ion-card-content>
-  </ion-card>
-
-
+  </ion-list>
 
 </ion-content>
