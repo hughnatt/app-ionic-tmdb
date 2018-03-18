@@ -15,11 +15,11 @@ import {Movie} from '../home/home';
   templateUrl: 'details.html',
 })
 export class DetailsPage {
-
+  
   movie : Movie;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.movie.title = this.navParams.get('title');
+    this.movie = this.navParams.get('movie');
   }
 
   ionViewDidLoad() {

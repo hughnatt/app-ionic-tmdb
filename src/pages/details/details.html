@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>details</ion-title>
+    <ion-title>Movie Details</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -17,24 +17,21 @@
     <ion-card>
 
         <ion-card-header>
-          Star Wars VIII
+          {{movie.title}}
         </ion-card-header>
-        <ion-card-content>
-          The Last Jedi
-        </ion-card-content>
-        <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"/>
+        <img [src]="movie.image" alt="Affiche du film"/>
         <ion-card-header>
           Director
         </ion-card-header>
         <ion-card-content>
-          Rian Johnson
+          {{movie.director}}
         </ion-card-content>
       
         <ion-card-header>
           Release Date
         </ion-card-header>
         <ion-card-content>
-          15/12/2017
+          {{movie.date}}
         </ion-card-content>
       </ion-card>
 </ion-content>

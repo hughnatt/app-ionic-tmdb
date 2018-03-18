@@ -64,7 +64,7 @@ const fakeMovies: Movie[] = [
   {
     title: "Star Wars VIII : The Last Jedi",
     director: "Georges Lucas",
-    date: "01-01-1977",
+    date: "13-12-2017",
     image:
       "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"
   }

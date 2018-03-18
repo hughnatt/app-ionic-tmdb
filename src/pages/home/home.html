@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      MMDO - TP
+      Home
     </ion-title>
   </ion-navbar>
   <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
@@ -19,7 +19,7 @@
       <h2>{{current.title}}</h2>
       <p>{{current.director}}</p>
       <p>{{current.date}}</p>
-      <button ion-button [navPush]="pushPage" [navParams]="{title: current.title}" item-end>View</button>
+      <button ion-button [navPush]="pushPage" [navParams]="{movie: current}" item-end>View</button>
     </ion-item>
 
     <ion-item *ngIf="results.length<=0">Aucun résultat</ion-item>
