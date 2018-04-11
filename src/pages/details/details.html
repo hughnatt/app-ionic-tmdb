@@ -17,21 +17,21 @@
     <ion-card>
 
         <ion-card-header>
-          {{movie.title}}
+          {{movie.original_title}}
         </ion-card-header>
-        <img [src]="movie.image" alt="Affiche du film"/>
+        <img [src]='"https://image.tmdb.org/t/p/w500/".concat(movie.poster_path)' alt="Affiche du film"/>
         <ion-card-header>
-          Director
+          Vote Average
         </ion-card-header>
         <ion-card-content>
-          {{movie.director}}
+          {{movie.vote_average}}
         </ion-card-content>
       
         <ion-card-header>
           Release Date
         </ion-card-header>
         <ion-card-content>
-          {{movie.date}}
+          {{movie.release_date}}
         </ion-card-content>
       </ion-card>
 </ion-content>

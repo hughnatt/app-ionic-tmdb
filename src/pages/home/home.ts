@@ -1,71 +1,101 @@
 import { Component } from "@angular/core";
-import { NavController } from "ionic-angular";
+import { NavController, Platform } from "ionic-angular";
 import { DetailsPage } from "../details/details";
+import { Observable } from "rxjs/Observable";
+import { AlertController } from 'ionic-angular';
+import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpParams } from "@angular/common/http";
+import {Subscription} from "rxjs/Subscription"
+import { Shake } from "@ionic-native/shake";
+const apikey: string = "ebb02613ce5a2ae58fde00f4db95a9c1";
 
 @Component({
   selector: "page-home",
-  templateUrl: "home.html"
+  templateUrl: "home.html",
 })
 export class HomePage {
-  results: Movie[];
+  private shakeSubscription: Subscription; 
+  results: Observable<Movie[]>;
   pushPage: any;
 
-  constructor(public navCtrl: NavController) {
-    this.results = [];
+  constructor(private shake : Shake, private platform : Platform, private alertCtrl: AlertController, public navCtrl: NavController, private http: HttpClient) {
+    this.results = Observable.of([]);
     this.pushPage = DetailsPage;
   }
 
-  getItems(ev: any) {
-    // Reset items back to all of the items
-    this.results = fakeMovies;
+  ionViewDidEnter(){
+    this.shakeSubscription = Observable.fromPromise(this.platform.ready())
+    .switchMap(() => this.shake.startWatch())
+    .switchMap(() => this.discoverMovies())
+    .subscribe(movies => this.showRandomMovieAlert (movies));
+  }
+  ionViewWillLeave(){
+    this.shakeSubscription.unsubscribe();
+  }
 
+  getItems(ev: any) {
     // set val to the value of the searchbar
     let val = ev.target.value;
 
     // if the value is an empty string don't filter the items
     if (val && val.trim() != "") {
-      this.results = this.results.filter(item => {
-        return item.title.toLowerCase().indexOf(val.toLowerCase()) > -1;
-      });
-    }
-    if (val.trim() == ""){
-      this.results = [];
+      this.results = this.fetchResults(val);
+    } else {
+      this.results = Observable.of([]);
     }
   }
-  // goToOtherPage() {
-  //   //push another page onto the history stack
-  //   //causing the nav controller to animate the new page in
-  //   this.navCtrl.push(DetailsPage);
-  // }
+
+  fetchResults(search: string): Observable<Movie[]> {
+    let url: string = "https://api.themoviedb.org/3/search/movie";
+
+    let Params = new HttpParams();
+    Params = Params.append("api_key", apikey);
+    Params = Params.append("query", search);
+
+    return this.http
+      .get<Movie[]>(url, { params: Params, responseType: "json" })
+      .pluck("results");
+  }
+
+  discoverMovies(): Observable<Movie[]> {
+    let url: string = "https://api.themoviedb.org/3/discover/movie";
+
+    let Params = new HttpParams();
+    Params = Params.append("api_key", apikey);
+    Params = Params.append("primary_release_year", "2018");
+
+    return this.http
+      .get<Movie[]>(url, { params: Params, responseType: "json" })
+      .pluck("results");
+  }
+
+  showRandomMovieAlert(movies: Partial<Movie>[]): void {
+    let random_movie = movies[Math.floor(Math.random()*movies.length)];
+    let alert = this.alertCtrl.create({
+      title: random_movie.original_title,
+      subTitle: random_movie.overview,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Details',
+          handler: () => {
+            this.navCtrl.push(DetailsPage, {movie : random_movie}); 
+          }
+        }
+      ]
+    });
+    alert.present();
+    
+  }
 }
 
 export interface Movie {
-  title: string;
-  director: string;
-  date: string;
-  image: string;
+  poster_path: string;
+  release_date: string;
+  original_title: string;
+  vote_average: string;
+  overview: string;
 }
-
-const fakeMovies: Movie[] = [
-  {
-    title: "The Lord of the Rings",
-    director: "Peter Jackson",
-    date: "18-12-2001",
-    image:
-      "https://image.tmdb.org/t/p/w600_and_h900_bestv2/bi9JddwTwBt3ixGLAiMAF7OXMbV.jpg"
-  },
-  {
-    title: "Star Wars IV : A New Hope",
-    director: "Georges Lucas",
-    date: "25-05-1977",
-    image:
-      "https://image.tmdb.org/t/p/w600_and_h900_bestv2/btTdmkgIvOi0FFip1sPuZI2oQG6.jpg"
-  },
-  {
-    title: "Star Wars VIII : The Last Jedi",
-    director: "Georges Lucas",
-    date: "13-12-2017",
-    image:
-      "https://image.tmdb.org/t/p/w600_and_h900_bestv2/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"
-  }
-];
